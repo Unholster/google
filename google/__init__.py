@@ -36,11 +36,11 @@ import sys
 import time
 
 if sys.version_info[0] > 2:
-    from http.cookiejar import LWPCookieJar
+    from http.cookiejar import CookieJar
     from urllib.request import Request, urlopen
     from urllib.parse import quote_plus, urlparse, parse_qs
 else:
-    from cookielib import LWPCookieJar
+    from cookielib import CookieJar
     from urllib import quote_plus
     from urllib2 import Request, urlopen
     from urlparse import urlparse, parse_qs
@@ -65,11 +65,7 @@ if not home_folder:
     home_folder = os.getenv('USERHOME')
     if not home_folder:
         home_folder = '.'   # Use the current folder on error.
-cookie_jar = LWPCookieJar(os.path.join(home_folder, '.google-cookie'))
-try:
-    cookie_jar.load()
-except Exception:
-    pass
+cookie_jar = CookieJar()
 
 # Default user agent, unless instructed by the user to change it.
 USER_AGENT = 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)'
@@ -122,7 +118,6 @@ def get_page(url, user_agent=None):
     cookie_jar.extract_cookies(response, request)
     html = response.read()
     response.close()
-    cookie_jar.save()
     return html
 
 
